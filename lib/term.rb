@@ -1,18 +1,30 @@
 class Term
   @@all_terms = []
 
-  def initialize(word, definition)
-    @word = word
-    @definition = definition
+  attr_reader(:words, :definitions)
+
+  def initialize
+    # @word = word
+    # @definition = definition
+    @words = []
+    @definitions = []
   end
 
-  def word
-    @word
+  def add_word(word)
+    @words << word
   end
 
-  def definition
-    @definition
+  def add_def(definition)
+    @definitions << definition
   end
+
+  # def word
+  #   @word
+  # end
+
+  # def definition
+  #   @definition
+  # end
 
   def Term.all
     @@all_terms
@@ -26,11 +38,17 @@ class Term
     @@all_terms = []
   end
 
-  def edit_def(new_def)
-    @definition = new_def
-  end
+  # def edit_def(new_def)
+  #   @definition = new_def
+  # end
 
-  def Term.search(term)
-    @@all_terms.detect {|item| item.word == term}
+  def Term.search(search_word)
+    @@all_terms.each do |term|
+      term.words.each do |word|
+        if word.word == search_word
+          return term
+        end
+      end
+    end
   end
 end

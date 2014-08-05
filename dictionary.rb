@@ -1,4 +1,6 @@
 require './lib/term.rb'
+require './lib/definition.rb'
+require './lib/word.rb'
 
 def main_menu
   system("clear")
@@ -29,30 +31,41 @@ def create_term
   user_word = gets.chomp
   puts "Enter the definition for #{user_word}: "
   user_def = gets.chomp
-  Term.new(user_word, user_def).save
+  Term.new.save
+  new_definition = Definition.new(user_def)
+  new_word = Word.new(user_word)
   @current_term = Term.all[-1]
-  puts "\nThe term you created is: #{@current_term.word}"
-  puts "The definition is: #{@current_term.definition}\n\n"
+  @current_term.add_word(new_word)
+  @current_term.add_def(new_definition)
+  puts "\nThe term you created is: #{@current_term.words[-1].word}"
+  puts "The definition is: #{@current_term.definitions[-1].definition}\n\n"
   term_menu
 end
 
 def list_terms
-  puts "\nThese are all of the words in your dictionary:"
+  puts "\nThese are all of the terms in your dictionary:"
   Term.all.each_with_index do |term, index|
-    puts "[#{index+1}] #{term.word} - #{term.definition}"
+    print "[#{(index+1)}] Word Group: "
+      term.words.each do |item|
+      puts "#{item.word}"
+    end
   end
   puts "\nEnter the number of the term you would like to edit.\n"
   term_choice = gets.chomp.to_i
   @current_term = Term.all[term_choice - 1]
-  puts "Your current term is #{@current_term.word}\n"
+  @current_word = @current_term.words[0].word
+  puts "Your current term is #{@current_term.words[0].word}\n"
   term_menu
 end
 
 def word_search
-puts "\nWhat word would you like to search for: "
-word_choice = gets.chomp
-@current_term = Term.search(word_choice)
-puts "#{@current_term.word} is found."
+  puts "\nWhat word would you like to search for:"
+  word_choice = gets.chomp
+  @current_term= Term.search(word_choice)
+  puts "word is found - your word group contains the following: "
+  @current_term.words.each do |item|
+    puts "#{item.word}"
+  end
 term_menu
 end
 
@@ -60,12 +73,15 @@ end
 def term_menu
   loop do
     puts "[-- Word Menu --]"
-    puts "[s] show the definition"
+    puts "[a] add another definition"
+    puts "[s] show the definitions"
     puts "[e] edit the definition"
     puts "[d] delete this word"
     puts "[x] exit to main menu"
     edit_choice = gets.chomp
-    if edit_choice == 's'
+    if edit_choice == 'a'
+      add_def
+    elsif edit_choice == 's'
       show_def
     elsif edit_choice == 'e'
       edit_def
@@ -79,17 +95,33 @@ def term_menu
   end
 end
 
+def add_def
+  puts "Enter another definition or get a pie to the face: "
+  def_input = gets.chomp
+  new_def = Definition.new(def_input)
+  @current_term.add_def(new_def)
+  puts "\nThanks! Your new definition has been added.\n\n"
+end
+
 def show_def
-  puts "\nWord: #{@current_term.word}"
-  puts "Definition: #{@current_term.definition}\n\n"
+  print "\nWords: "
+  @current_term.words.each do |item|
+    print "#{item.word}"
+    end
+  @current_term.definitions.each_with_index do |item, index|
+    puts "\n[#{index + 1}] - #{item.definition}"
+  end
+  puts "\n"
 end
 
 def edit_def
+  show_def
   puts "What would you like the definition to say?"
   def_edit = gets.chomp
   @current_term.edit_def(def_edit)
   puts "\nGood job! Your new definition for #{@current_term.word} is:"
   puts "#{@current_term.definition}\n\n"
+  show_def
 end
 
 def delete_word

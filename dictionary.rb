@@ -45,9 +45,9 @@ end
 def list_terms
   puts "\nThese are all of the terms in your dictionary:"
   Term.all.each_with_index do |term, index|
-    print "[#{(index+1)}] Word Group: "
+    print "[#{(index+1)}] Word Group:\n "
       term.words.each do |item|
-      puts "#{item.word}"
+      print " #{item.word} "
     end
   end
   puts "\nEnter the number of the term you would like to edit.\n"
@@ -74,6 +74,7 @@ def term_menu
   loop do
     puts "[-- Word Menu --]"
     puts "[a] add another definition"
+    puts "[b] add alternate word to current group"
     puts "[s] show the definitions"
     puts "[e] edit the definition"
     puts "[d] delete this word"
@@ -81,6 +82,8 @@ def term_menu
     edit_choice = gets.chomp
     if edit_choice == 'a'
       add_def
+    elsif edit_choice == 'b'
+      add_word_to_group
     elsif edit_choice == 's'
       show_def
     elsif edit_choice == 'e'
@@ -95,8 +98,16 @@ def term_menu
   end
 end
 
+def add_word_to_group
+  puts "Enter another word to the group: "
+  word_input = gets.chomp
+  new_word = Word.new(word_input)
+  @current_term.add_word(new_word)
+  puts "\nThanks! your alternate word has been added to the group"
+end
+
 def add_def
-  puts "Enter another definition or get a pie to the face: "
+  puts "Enter another definition: "
   def_input = gets.chomp
   new_def = Definition.new(def_input)
   @current_term.add_def(new_def)
@@ -106,7 +117,7 @@ end
 def show_def
   print "\nWords: "
   @current_term.words.each do |item|
-    print "#{item.word}"
+    print "#{item.word}  "
     end
   @current_term.definitions.each_with_index do |item, index|
     puts "\n[#{index + 1}] - #{item.definition}"

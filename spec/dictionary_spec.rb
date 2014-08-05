@@ -47,6 +47,15 @@ describe Term do
     test_term.add_def(test_definition)
     expect(test_term.definitions).to eq [test_definition]
   end
+
+  it 'will add another word to the existing term' do
+    test_term = Term.new
+    test_word = Word.new('pretzel')
+    test_term.add_word(test_word)
+    expect(test_term.words).to eq [test_word]
+  end
+
+
 #   it 'will save all terms to the term array' do
 #     test_term = Term.new('epicodus', 'a place for learning')
 #     test_term.save

@@ -25,4 +25,12 @@ class Term
   def Term.clear
     @@all_terms = []
   end
+
+  def edit_def(new_def)
+    @definition = new_def
+  end
+
+  def Term.search(term)
+    @@all_terms.detect {|item| item.word == term}
+  end
 end

@@ -36,4 +36,19 @@ describe Term do
     test_term.save
     expect(Term.all).to eq [test_term]
   end
+
+  it 'will change the definition of a term' do
+    test_term = Term.new('epicodus', 'a place for learning')
+    test_term.save
+    test_term.edit_def('a place to meet people')
+    expect(test_term.definition).to eq 'a place to meet people'
+  end
+
+  describe '.search' do
+    it 'will search for a word in the dictionary' do
+      test_term = Term.new('pretzel', 'buttery, carby goodness')
+      test_term.save
+      expect(Term.search('pretzel')).to eq test_term
+    end
+  end
 end
